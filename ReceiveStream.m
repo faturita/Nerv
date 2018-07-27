@@ -46,12 +46,6 @@ end
 %     markers = [markers; [ts mrks]];
 % end
 
-Fs = 256;
-signal = EEG(:,2:9);
-bandpass = true;
 
-if (bandpass)
-    signal = bandpasseeg(signal, channelRange,Fs,3);
-end
     
     

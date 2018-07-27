@@ -18,11 +18,14 @@ inlet = lsl_inlet(result{1});
 
 %inlet2 = lsl_inlet(result2{1});
 
+Fs=250;
 trials=0;
 disp('Now receiving data...');
 counter=0;
 EEG = [];
+mEEG = [];
 markers = [];
+clear sEEG;
 try
     msg = '';
     while ( strcmpi(msg,'finishplot') == 0)
@@ -34,28 +37,38 @@ try
         %fprintf('%.5f\n',ts);
 
         EEG = [EEG; [ts vec]];
+        mEEG = [mEEG; [ts vec]];
         
    
-        k = find(EEG(:,10)==32774);
+        k = find(EEG(:,12)==32774);
         if (size(k,1)>0)
 
             [MSSG,sourcehost,sourceport] = judp('RECEIVE', 7788, 10024, 100000);
             msg = char(MSSG');    
             disp(msg);
-            sEEG{trials} = EEG;
-            signal = EEG(:,2:9);
-            row = num2str(randi(6)-1)
-            col = num2str(randi(6)-1)
-            judp('SEND',sourceport, sourcehost, int8([row,col]));   
-            EEG = [];
+            
             trials=trials+1;
+            sEEG{trials} = EEG;
+            
+            
+            ProcessTrial
+            EEG = [];
+            
+            row = num2str(r);
+            col = num2str(c);
+            
+            %row = num2str(randi(6)-1)
+            %col = num2str(randi(6)-1)
+            judp('SEND',sourceport, sourcehost, int8([row,col]));   
+            
         end
         
         
         
 
     end
-catch
+catch ME
+    ME
     
 end
 
@@ -67,12 +80,12 @@ end
 %     markers = [markers; [ts mrks]];
 % end
 
-Fs = 256;
+Fs = 250;
 %signal = EEG(:,2:9);
 bandpass = true;
 channelRange=1:8;
 
 if (bandpass)
-    signal = bandpasseeg(signal, channelRange,Fs,3);
+    signal = bandpasseeg(samples, channelRange,Fs,3);
 end
     

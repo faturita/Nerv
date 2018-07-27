@@ -92,6 +92,9 @@ function process(box)
 		for stimulation = 1, box:get_stimulation_count(2) do
 			-- gets the received stimulation
 			local identifier, date, duration = box:get_stimulation(2, 1)
+      -- gets stimulation
+			box:log("Info", string.format("Stimulation %010x,%5.0f at %f (now = %f)", identifier, identifier, date, duration))
+
 			-- discards it
 			box:remove_stimulation(2, 1)
 
@@ -101,35 +104,15 @@ function process(box)
 					box:log("Info", string.format("Clear votes"))
 				end
 				-- zero the votes
-				col_votes = {}
-				row_votes = {}
+
 				target_fifo = List.new()
-				-- fixme fixed 20
-				for i = 0,20 do
-					col_votes[i] = 0
-					row_votes[i] = 0
-				end
+
 				segment_status = 1
 			end
 
 			-- Does the identifier code a flash? if so, put into fifo
 			if segment_status == 1 and identifier >= row_base and identifier <= OVTK_StimulationId_LabelEnd then
-
-				-- assume rows before cols
-				if identifier < col_base then
-					local t = {"row", identifier - row_base}
-					List.pushright(target_fifo,t)
-					if do_debug then
-						box:log("Info", string.format("Push row target %d", identifier - row_base ))
-					end
-				else
-					local t = {"col", identifier - col_base}
-					List.pushright(target_fifo,t)
-					if do_debug then
-						box:log("Info", string.format("Push col target %d", identifier - col_base ))
-					end
-				end
-
+        box:log("Info", string.format("Label"))
 
 			end
 
@@ -142,35 +125,6 @@ function process(box)
 
 		end
 
-		-- then parse the classifications
-		for stimulation = 1, box:get_stimulation_count(1) do
-
-			-- gets the received stimulation
-			local identifier, date, duration = box:get_stimulation(1, 1)
-			-- discards it
-			box:remove_stimulation(1, 1)
-
-			-- Is it an in-class prediction?
-			if identifier == OVTK_StimulationId_Target then
-				local t = List.popleft(target_fifo)
-				if do_debug then
-					box:log("Info", string.format("Pred fifo %s %d is target", t[1], t[2]))
-				end
-				if t[1]=="row" then
-					row_votes[t[2]] = row_votes[t[2]] + 1
-				else
-					col_votes[t[2]] = col_votes[t[2]] + 1
-				end
-			end
-
-			if identifier == OVTK_StimulationId_NonTarget then
-				local t = List.popleft(target_fifo)
-				if do_debug then
-					box:log("Info", string.format("Pred fifo %s %d is nontarget", t[1], t[2]))
-				end
-			end
-
-		end
 
 		if segment_status == 2 and List.isempty(target_fifo) then
 			-- output the vote after the segment end when we've matched all predictions
@@ -216,7 +170,7 @@ function process(box)
 
 
       retries = 0
-      while retries < 20 do
+      while retries < 40 do
         assert(udp:sendto("anything", ip, port))
         -- retrieve the answer and print results
         udp:settimeout(10+retries)

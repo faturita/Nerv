@@ -1,0 +1,3 @@
+[submodule "lslgateway"]
+	path = lslgateway
+	url = https://github.com/faturita/lslgateway

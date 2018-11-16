@@ -119,11 +119,11 @@
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x1fa7a38f, 0x54edbe0b)</Identifier>
-					<Value>528</Value>
+					<Value>512</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x207c9054, 0x3c841b63)</Identifier>
-					<Value>816</Value>
+					<Value>992</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x4e7b798a, 0x183beafb)</Identifier>
@@ -210,7 +210,7 @@
 					<TypeIdentifier>(0x007deef9, 0x2f3e95c6)</TypeIdentifier>
 					<Name>Number of trials</Name>
 					<DefaultValue>5</DefaultValue>
-					<Value>6</Value>
+					<Value>1</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 				<Setting>
@@ -966,15 +966,15 @@ folder where the scenario xml is located
 		</Comment>
 		<Comment>
 			<Identifier>(0x24020235, 0x4f7e23eb)</Identifier>
-			<Text>You can browse each box' documentation by selecting the box and pressing &lt;b&gt;F1&lt;/b&gt;</Text>
+			<Text>P300 Processing using LSL</Text>
 			<Attributes>
 				<Attribute>
 					<Identifier>(0x473d9a43, 0x97fc0a97)</Identifier>
-					<Value>496.000000</Value>
+					<Value>624</Value>
 				</Attribute>
 				<Attribute>
 					<Identifier>(0x7234b86b, 0x2b8651a5)</Identifier>
-					<Value>48.000000</Value>
+					<Value>48</Value>
 				</Attribute>
 			</Attributes>
 		</Comment>

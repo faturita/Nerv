@@ -66,6 +66,7 @@ function process(box)
 
 			-- gets stimulation
 			stimulation_id, stimulation_time, stimulation_duration = box:get_stimulation(1, 1)
+			box:log("Info", string.format("Stimulation %010x,%f at %f (now = %f)", stimulation_id, stimulation_id, stimulation_time, stimulation_duration))
 
 			if stimulation_id == OVTK_StimulationId_RestStart then
 

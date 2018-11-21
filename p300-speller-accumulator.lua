@@ -42,6 +42,8 @@ function List.isempty (list)
 	end
 end
 
+local serverudp
+
 -- this function is called when the box is initialized
 function initialize(box)
 
@@ -69,11 +71,15 @@ function initialize(box)
   socket = require('socket')
   print(socket._VERSION)
 
+  serverudp = socket.udp()
+  serverudp:setsockname("*", 7788)
+  serverudp:settimeout(0)
+
 end
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
-  local host, port = "localhost", 7788
+  local host, port = "10.17.2.54", 7788
   -- load namespace
   -- convert host name to ip address
   local ip = assert(socket.dns.toip(host))
@@ -157,47 +163,53 @@ function process(box)
       --print(cookie)
 
       -- change here to the host an port you want to contact
-      local host, port = "localhost", 7788
+      local host, port = "10.17.2.54", 7788
       -- load namespace
       -- convert host name to ip address
       local ip = assert(socket.dns.toip(host))
       -- create a new UDP object
       local udp = assert(socket.udp())
       -- contact daytime host
-      assert(udp:sendto("anything", ip, port))
+      assert(udp:sendto("1", ip, port))
       -- retrieve the answer and print results
 
 
 
       retries = 0
-      while retries < 40 do
-        assert(udp:sendto("anything", ip, port))
+      while retries < 10 do
+        assert(udp:sendto("1", ip, port))
         -- retrieve the answer and print results
-        udp:settimeout(10+retries)
-        val = udp:receive()
+        -- udp:settimeout(10+retries)
 
+        serverudp:settimeout(10+retries)
+        val, ips, ports = serverudp:receivefrom()
+
+        --val = udp:receive()
+        --box:log("Info", val)
         if (val ~= nil) and string.len(val)>0 then
           break
         end
         retries = retries + 1
-        box:log("Info", string.format('Retrying %d',retries))
+        --box:log("Info", string.format('Retrying %d',retries))
         box:sleep()
 
       end
 
       if (val ~= nil) and string.len(val)>0 then
 
-        box:log("Info", val)
+        --box:log("Info", string.sub(val,2,3))
+        --box:log("Info", string.sub(val,5,6))
 
         --val = tonumber(val)
-        r = tonumber(string.sub(val,1,1))
-        c = tonumber(string.sub(val,2,2))
+        r = tonumber(string.sub(val,2,3))
+        c = tonumber(string.sub(val,5,6))
       else
         r = 0
         c = 0
       end
 
       box:log("Info", string.format('%d,%d',r,c))
+      assert(udp:sendto("2", ip, port))
 
 			local now = box:get_current_time()
 

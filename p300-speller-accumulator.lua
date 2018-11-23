@@ -90,6 +90,18 @@ function uninitialize(box)
   -- retrieve the answer and print results
 end
 
+function flushbuffer()
+  serverudp:settimeout(1)
+  val, ips, ports = serverudp:receivefrom()
+  while true do
+    serverudp:settimeout(1)
+    val, ips, ports = serverudp:receivefrom()
+    if (val == nil) or string.len(val)<=0 then
+      break
+    end
+  end
+end
+
 function process(box)
 	-- loops until box is stopped
 	while box:keep_processing() do
@@ -161,6 +173,8 @@ function process(box)
       --client:connect('www.itba.edu.ar', 80)
       --cookie=client:receive()
       --print(cookie)
+
+      flushbuffer()
 
       -- change here to the host an port you want to contact
       local host, port = "10.17.2.54", 7788

@@ -79,7 +79,7 @@ end
 
 -- this function is called when the box is uninitialized
 function uninitialize(box)
-  local host, port = "10.17.2.54", 7788
+  local host, port = "10.17.2.85", 7788
   -- load namespace
   -- convert host name to ip address
   local ip = assert(socket.dns.toip(host))
@@ -177,7 +177,7 @@ function process(box)
       flushbuffer()
 
       -- change here to the host an port you want to contact
-      local host, port = "10.17.2.54", 7788
+      local host, port = "10.17.2.85", 7788
       -- load namespace
       -- convert host name to ip address
       local ip = assert(socket.dns.toip(host))
